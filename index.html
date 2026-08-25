@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Ejecución de Presupuesto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">CONTROL PRESUPUESTARIO</div>
+      <h1>Dashboard de Ejecución de Presupuesto</h1>
+      <p id="dataSource">Cargando información...</p>
+    </div>
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      <div>QUIPUKEY</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="notice" id="statusMessage">
+      <strong>Fuente:</strong> el dashboard utiliza la hoja <b>Detalle Centro-Supra</b>.
+      La ejecución se calcula como <b>Real + Comprometido</b>.
+    </section>
+
+    <section class="filters card">
+      <div class="section-title">
+        <span>Filtros</span>
+        <button id="resetBtn" class="secondary-btn">Limpiar filtros</button>
+      </div>
+
+      <div class="filter-grid">
+        <label>
+          Año
+          <select id="yearFilter">
+            <option value="">Todos / no definido en Excel</option>
+          </select>
+        </label>
+
+        <label>
+          Centro
+          <select id="centerFilter"><option value="">Todos</option></select>
+        </label>
+
+        <label>
+          Formato
+          <select id="formatFilter"><option value="">Todos</option></select>
+        </label>
+
+        <label>
+          Supranúmero
+          <select id="supraFilter"><option value="">Todos</option></select>
+        </label>
+
+        <label>
+          Estatus
+          <select id="statusFilter"><option value="">Todos</option></select>
+        </label>
+
+        <label class="file-control">
+          Cargar otro Excel
+          <input type="file" id="fileInput" accept=".xlsx,.xls">
+        </label>
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <article class="kpi card">
+        <div class="kpi-icon">₱</div>
+        <div><span>Presupuesto</span><strong id="kpiPlan">RD$ 0</strong></div>
+      </article>
+      <article class="kpi card">
+        <div class="kpi-icon">R</div>
+        <div><span>Real</span><strong id="kpiReal">RD$ 0</strong></div>
+      </article>
+      <article class="kpi card">
+        <div class="kpi-icon">C</div>
+        <div><span>Comprometido</span><strong id="kpiCommitted">RD$ 0</strong></div>
+      </article>
+      <article class="kpi card highlight">
+        <div class="kpi-icon">E</div>
+        <div><span>Ejecución = Real + Comprometido</span><strong id="kpiExecuted">RD$ 0</strong></div>
+      </article>
+      <article class="kpi card">
+        <div class="kpi-icon">P</div>
+        <div><span>Pendiente</span><strong id="kpiPending">RD$ 0</strong></div>
+      </article>
+      <article class="kpi card">
+        <div class="kpi-icon">%</div>
+        <div><span>% Ejecución</span><strong id="kpiPercent">0.00%</strong></div>
+      </article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="card chart-card gauge-card">
+        <div class="card-title">% de Ejecución</div>
+        <div class="gauge-wrap">
+          <canvas id="gaugeChart"></canvas>
+          <div class="gauge-center">
+            <strong id="gaugeValue">0.00%</strong>
+            <span>Real + Comprometido</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card chart-card wide">
+        <div class="card-title">Ejecución por Centro</div>
+        <div class="chart-box"><canvas id="centerChart"></canvas></div>
+      </article>
+
+      <article class="card chart-card wide">
+        <div class="card-title">Ejecución por Supranúmero — principales 12</div>
+        <div class="chart-box"><canvas id="supraChart"></canvas></div>
+      </article>
+
+      <article class="card chart-card">
+        <div class="card-title">Distribución del presupuesto</div>
+        <div class="chart-box"><canvas id="compositionChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="card table-card">
+      <div class="table-head">
+        <div>
+          <div class="card-title">Detalle de ejecución</div>
+          <p id="rowCount">0 registros</p>
+        </div>
+        <div class="table-actions">
+          <button id="exportBtn" class="primary-btn">Exportar vista CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Centro</th>
+              <th>Formato</th>
+              <th>Supranúmero</th>
+              <th>Descripción</th>
+              <th>Plan</th>
+              <th>Real</th>
+              <th>Comprometido</th>
+              <th>Ejecución</th>
+              <th>Pendiente</th>
+              <th>% Ejec.</th>
+              <th>Estatus</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>Dashboard CAPEX</span>
+      <span>•</span>
+      <span>La ejecución se calcula automáticamente: (Real + Comprometido) / Plan</span>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

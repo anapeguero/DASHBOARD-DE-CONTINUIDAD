@@ -154,3 +154,161 @@ function exportCSV(){const headers=["Centro","Formato","Descripción de Partida"
 $("resetBtn").addEventListener("click",()=>{["centerFilter","formatFilter","supraFilter"].forEach(id=>$(id).value="");applyFilters()});
 $("exportBtn").addEventListener("click",exportCSV);
 loadDefault();
+
+
+// ===========================
+// Asistente CAPEX (sin IA externa)
+// ===========================
+function chatAddMessage(text, sender="bot"){
+  const box=$("chatMessages");
+  const div=document.createElement("div");
+  div.className=`chat-message ${sender}`;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+function normalizeQuestion(text){
+  return String(text||"")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[¿?¡!.,;:]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function currentRowsForAssistant(){
+  return filteredRows && filteredRows.length ? filteredRows : allRows;
+}
+
+function topBy(rows, groupField, metric="execution"){
+  const data=aggregate(rows,groupField);
+  if(!data.length) return null;
+  return [...data].sort((a,b)=>(b[metric]||0)-(a[metric]||0))[0];
+}
+
+function bottomByPercent(rows, groupField){
+  const data=aggregate(rows,groupField).filter(x=>x.plan>0);
+  if(!data.length) return null;
+  return [...data].sort((a,b)=>a.percent-b.percent)[0];
+}
+
+function answerQuestion(question){
+  const q=normalizeQuestion(question);
+  const rows=currentRowsForAssistant();
+  if(!rows.length) return "Todavía no hay datos cargados para responder.";
+
+  const t=totals(rows);
+
+  if(
+    q.includes("porcentaje de ejecucion") ||
+    q.includes("% de ejecucion") ||
+    q.includes("cuanto va ejecutado") ||
+    q==="ejecucion"
+  ){
+    return `La ejecución actual es ${pct(t.percent*100)}.\n\nEjecución: ${money2(t.execution)}\nPresupuesto: ${money2(t.plan)}.`;
+  }
+
+  if(q.includes("cuanto queda pendiente") || q.includes("pendiente")){
+    return `Queda pendiente ${money2(t.pending)}, equivalente a ${pct((t.plan ? t.pending/t.plan : 0)*100)} del presupuesto filtrado.`;
+  }
+
+  if(q.includes("real") && !q.includes("comprometido")){
+    return `El monto real acumulado es ${money2(t.real)}.`;
+  }
+
+  if(q.includes("comprometido")){
+    return `El monto comprometido es ${money2(t.committed)}.`;
+  }
+
+  if(q.includes("presupuesto total") || q==="presupuesto" || q.includes("cuanto es el presupuesto")){
+    return `El presupuesto considerado es ${money2(t.plan)}.`;
+  }
+
+  if(q.includes("centro") && (q.includes("mayor ejecucion") || q.includes("mas ejecucion") || q.includes("mejor ejecucion"))){
+    const x=topBy(rows,"centro","execution");
+    return x ? `${x.label} es el centro con mayor ejecución: ${money2(x.execution)}, equivalente a ${pct(x.percent*100)} de su presupuesto.` : "No pude identificar centros con datos.";
+  }
+
+  if(q.includes("centro") && (q.includes("menor ejecucion") || q.includes("peor ejecucion") || q.includes("menos ejecucion"))){
+    const x=bottomByPercent(rows,"centro");
+    return x ? `${x.label} tiene el menor porcentaje de ejecución entre los centros con presupuesto: ${pct(x.percent*100)} (${money2(x.execution)} ejecutado de ${money2(x.plan)}).` : "No pude identificar centros con presupuesto.";
+  }
+
+  if(
+    (q.includes("supranumero") || q.includes("partida")) &&
+    (q.includes("mayor presupuesto") || q.includes("mas presupuesto"))
+  ){
+    const x=topBy(rows,"descripcion","plan");
+    return x ? `La partida con mayor presupuesto es “${x.label}” con ${money2(x.plan)}.` : "No pude identificar partidas con presupuesto.";
+  }
+
+  if(
+    (q.includes("supranumero") || q.includes("partida")) &&
+    (q.includes("mayor ejecucion") || q.includes("mas ejecucion"))
+  ){
+    const x=topBy(rows,"descripcion","execution");
+    return x ? `La partida con mayor ejecución es “${x.label}” con ${money2(x.execution)} (${pct(x.percent*100)} de ejecución).` : "No pude identificar partidas con ejecución.";
+  }
+
+  if(q.includes("formato") && (q.includes("mayor ejecucion") || q.includes("mejor ejecucion") || q.includes("mas ejecucion"))){
+    const data=aggregate(rows,"formato").filter(x=>x.plan>0);
+    if(!data.length) return "No hay formatos con presupuesto para comparar.";
+    const x=[...data].sort((a,b)=>b.percent-a.percent)[0];
+    return `${x.label} es el formato con mayor % de ejecución: ${pct(x.percent*100)} (${money2(x.execution)} ejecutado de ${money2(x.plan)}).`;
+  }
+
+  if(q.includes("resumen") || q.includes("resumen ejecutivo")){
+    const topCenter=topBy(rows,"centro","execution");
+    const topPart=topBy(rows,"descripcion","execution");
+    return `Resumen del CAPEX filtrado:
+• Presupuesto: ${money2(t.plan)}
+• Real: ${money2(t.real)}
+• Comprometido: ${money2(t.committed)}
+• Ejecución: ${money2(t.execution)} (${pct(t.percent*100)})
+• Pendiente: ${money2(t.pending)}
+${topCenter ? `• Centro con mayor ejecución: ${topCenter.label}` : ""}
+${topPart ? `• Partida con mayor ejecución: ${topPart.label}` : ""}`;
+  }
+
+  return `Puedo responder preguntas sobre presupuesto, real, comprometido, ejecución, pendiente, centros, formatos y supranúmeros.
+
+Ejemplos:
+• ¿Cuál es el porcentaje de ejecución?
+• ¿Cuál centro tiene mayor ejecución?
+• ¿Qué supranúmero tiene mayor presupuesto?
+• ¿Cuál formato tiene mejor ejecución?
+• Dame un resumen ejecutivo.`;
+}
+
+function askAssistant(question){
+  const text=String(question||"").trim();
+  if(!text) return;
+  chatAddMessage(text,"user");
+  setTimeout(()=>chatAddMessage(answerQuestion(text),"bot"),180);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const toggle=$("chatToggle");
+  const panel=$("chatPanel");
+  const close=$("chatClose");
+  const form=$("chatForm");
+  const input=$("chatInput");
+
+  if(toggle && panel){
+    toggle.addEventListener("click",()=>panel.classList.toggle("open"));
+    close?.addEventListener("click",()=>panel.classList.remove("open"));
+  }
+
+  document.querySelectorAll(".chat-quick-actions button").forEach(btn=>{
+    btn.addEventListener("click",()=>askAssistant(btn.dataset.question));
+  });
+
+  form?.addEventListener("submit",e=>{
+    e.preventDefault();
+    const q=input.value;
+    input.value="";
+    askAssistant(q);
+  });
+});

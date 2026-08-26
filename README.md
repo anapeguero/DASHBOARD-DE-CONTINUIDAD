@@ -32,3 +32,14 @@ El botón para cargar Excel desde el navegador fue eliminado. Para actualizar la
 - Eliminada la columna **Estatus** del detalle.
 - Sustituido el gráfico de estado de partidas por una **Distribución del Presupuesto por Supranúmero** tipo dona.
 - La distribución usa la **descripción** del supranúmero, muestra las categorías principales y agrupa el resto como **Otros**.
+
+## Versión 6.1
+- Se agregó control de caché para GitHub Pages (`?v=6.1`) para evitar mezclar archivos antiguos y nuevos.
+- Se añadieron validaciones de carga de SheetJS y Chart.js.
+- Se corrigió la exportación CSV para que tampoco incluya Estatus.
+
+## Versión 6.2 — corrección de carga
+- El Excel oficial ahora se llama `data.xlsx` para evitar problemas de rutas, espacios y acentos en GitHub Pages.
+- La página fuerza una lectura nueva del Excel (`cache: no-store`).
+- Si ocurre un error de datos, se muestra claramente en rojo debajo del título.
+- Para futuras actualizaciones, reemplaza `data.xlsx` manteniendo exactamente ese nombre.

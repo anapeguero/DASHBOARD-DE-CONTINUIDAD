@@ -1,4 +1,4 @@
-const SOURCE_FILE = "Panel de Ejecucion CAPEX.xlsx";
+const SOURCE_FILE = "data.xlsx";
 const SHEET_NAME = "Detalle Centro-Supra";
 let allRows = [], filteredRows = [], charts = {};
 const $ = id => document.getElementById(id);
@@ -24,8 +24,8 @@ async function loadWorkbook(arrayBuffer,sourceLabel){
 async function loadDefault(){
   try{
     if(typeof XLSX==="undefined") throw new Error("No se pudo cargar la librería de Excel.");
-    if(typeof Chart==="undefined") throw new Error("No se pudo cargar la librería de gráficos.");const response=await fetch(SOURCE_FILE);if(!response.ok)throw new Error(`No se pudo abrir ${SOURCE_FILE}`);await loadWorkbook(await response.arrayBuffer(),SOURCE_FILE)}
-  catch(err){$("dataSource").textContent="No se pudo cargar la fuente de datos: "+err.message}
+    if(typeof Chart==="undefined") throw new Error("No se pudo cargar la librería de gráficos.");const response=await fetch(`${SOURCE_FILE}?v=6.2`, {cache:"no-store"});if(!response.ok)throw new Error(`No se pudo abrir ${SOURCE_FILE}`);await loadWorkbook(await response.arrayBuffer(),SOURCE_FILE)}
+  catch(err){console.error(err);$("dataSource").textContent="ERROR DE DATOS: "+err.message;$("dataSource").style.color="#d71920";$("dataSource").style.fontWeight="800"}
 }
 function uniqueSorted(field){return [...new Set(allRows.map(r=>r[field]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es",{numeric:true}))}
 function fillSelect(id,values,allLabel="Todos"){const s=$(id),cur=s.value;s.innerHTML=`<option value="">${allLabel}</option>`+values.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");if(values.includes(cur))s.value=cur}

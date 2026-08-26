@@ -22,7 +22,9 @@ async function loadWorkbook(arrayBuffer,sourceLabel){
   populateFilters();applyFilters();
 }
 async function loadDefault(){
-  try{const response=await fetch(SOURCE_FILE);if(!response.ok)throw new Error(`No se pudo abrir ${SOURCE_FILE}`);await loadWorkbook(await response.arrayBuffer(),SOURCE_FILE)}
+  try{
+    if(typeof XLSX==="undefined") throw new Error("No se pudo cargar la librería de Excel.");
+    if(typeof Chart==="undefined") throw new Error("No se pudo cargar la librería de gráficos.");const response=await fetch(SOURCE_FILE);if(!response.ok)throw new Error(`No se pudo abrir ${SOURCE_FILE}`);await loadWorkbook(await response.arrayBuffer(),SOURCE_FILE)}
   catch(err){$("dataSource").textContent="No se pudo cargar la fuente de datos: "+err.message}
 }
 function uniqueSorted(field){return [...new Set(allRows.map(r=>r[field]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es",{numeric:true}))}
@@ -147,7 +149,7 @@ function renderTable(){$("dataTable").innerHTML=filteredRows.map(r=>`<tr><td><b>
 function shortLabel(v,n){return v.length>n?v.slice(0,n-1)+"…":v}
 function formatMillions(v){const n=Number(v)||0;if(Math.abs(n)>=1e9)return`RD$ ${(n/1e9).toFixed(1)} B`;if(Math.abs(n)>=1e6)return`RD$ ${(n/1e6).toFixed(1)} M`;if(Math.abs(n)>=1e3)return`RD$ ${(n/1e3).toFixed(0)} K`;return`RD$ ${n}`}
 function escapeHtml(value){return String(value??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function exportCSV(){const headers=["Centro","Formato","Descripción de Partida","Plan","Real","Comprometido","Ejecución","Pendiente","% Ejecución","Estatus"];const lines=[headers.join(",")];filteredRows.forEach(r=>{lines.push([r.centro,r.formato,r.descripcion,r.plan,r.real,r.committed,r.execution,r.pending,r.percent,r.status].map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(","))});const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8;"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="dashboard_ejecucion_filtrado.csv";a.click();URL.revokeObjectURL(a.href)}
+function exportCSV(){const headers=["Centro","Formato","Descripción de Partida","Plan","Real","Comprometido","Ejecución","Pendiente","% Ejecución"];const lines=[headers.join(",")];filteredRows.forEach(r=>{lines.push([r.centro,r.formato,r.descripcion,r.plan,r.real,r.committed,r.execution,r.pending,r.percent].map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(","))});const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8;"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="dashboard_ejecucion_filtrado.csv";a.click();URL.revokeObjectURL(a.href)}
 ["centerFilter","formatFilter","supraFilter"].forEach(id=>$(id).addEventListener("change",applyFilters));
 $("resetBtn").addEventListener("click",()=>{["centerFilter","formatFilter","supraFilter"].forEach(id=>$(id).value="");applyFilters()});
 $("exportBtn").addEventListener("click",exportCSV);

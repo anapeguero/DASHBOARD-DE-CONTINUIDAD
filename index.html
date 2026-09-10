@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPEX de Continuidad | Resumen VP</title>
+  <link rel="stylesheet" href="style.css?v=14">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="grupo-ramos-mark" aria-label="Grupo Ramos"><img class="grupo-ramos-logo" src="https://www.gruporamos.com/gruporamos-logo-white.svg" alt="Grupo Ramos"></div>
+      <div class="brand-copy">
+        <h1>CAPEX DE CONTINUIDAD</h1>
+        <p id="headerSubtitle">VISIÓN EJECUTIVA</p>
+      </div>
+    </div>
+
+    <nav class="topnav">
+      <button class="nav-btn active" data-page="vp">Visión Ejecutiva</button>
+      <button class="nav-btn" data-page="general">Ejecución General</button>
+      <button class="nav-btn" data-page="centros">Análisis de Inversiones</button>
+    </nav>
+
+    <div class="topmeta">
+      <div class="updated"><span>Última actualización</span><b id="lastUpdated">—</b></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- VISIÓN EJECUTIVA -->
+    <section id="page-vp" class="page active">
+      <section class="global-filter-row executive-area-filter">
+        <div class="area-filter">
+          <strong>Área:</strong>
+          <div class="segmented" id="areaFilter">
+            <button class="active" data-area="Todas">Todas</button>
+            <button data-area="Operaciones">Operaciones</button>
+            <button data-area="Mantenimiento">Mantenimiento</button>
+          </div>
+        </div>
+        <div class="view-chip" id="viewChip">ⓘ &nbsp; Vista actual: Todas las áreas (Operaciones + Mantenimiento)</div>
+      </section>
+      <section class="panel annual-panel annual-comparison-panel ">
+        <div class="section-header">EJECUCIÓN ACUMULADA DEL AÑO 2026</div>
+        <div class="annual-comparison-layout">
+          <div class="annual-bars-zone">
+            <div class="annual-result-head">
+              <div><span id="vpGapLabel">Por ejecutar</span><b id="vpGap">RD$0</b></div>
+              <strong id="vpAnnualPct">0% de ejecución</strong>
+            </div>
+            <div class="annual-bracket" aria-hidden="true"><i></i><span></span><i></i></div>
+            <div class="annual-bars">
+              <div class="annual-bar-column">
+                <div class="annual-total-value" id="vpExecutionTop">RD$0</div>
+                <div class="vertical-bar execution-stack">
+                  <div class="bar-segment committed" id="vpCommittedBar"><span id="vpCommittedInside">RD$0</span></div>
+                  <div class="bar-segment real" id="vpRealBar"><span id="vpRealInside">RD$0</span></div>
+                </div>
+                <b class="bar-label">Ejecución</b>
+              </div>
+              <div class="annual-bar-column">
+                <div class="annual-total-value" id="vpPlanTop">RD$0</div>
+                <div class="vertical-bar plan-bar">
+                  <div class="bar-segment plan" id="vpPlanBar"><span id="vpPlanInside">RD$0</span></div>
+                </div>
+                <b class="bar-label">Plan</b>
+              </div>
+            </div>
+            <div class="annual-legend">
+              <span><i class="legend-dot real-dot"></i>Real</span>
+              <span><i class="legend-dot committed-dot"></i>Comprometido</span>
+              <span><i class="legend-dot plan-dot"></i>Plan</span>
+            </div>
+          </div>
+
+          <aside class="annual-indicators">
+            <h3>Indicadores clave</h3>
+            <div class="annual-indicator-grid">
+              <article><span>Plan anual</span><b id="vpPlan">RD$0</b></article>
+              <article class="green"><span>Real</span><b id="vpReal">RD$0</b><small id="vpRealPct">0% del plan</small></article>
+              <article class="orange"><span>Comprometido</span><b id="vpCommitted">RD$0</b><small id="vpCommittedPct">0% del plan</small></article>
+              <article class="muted"><span>Por ejecutar</span><b id="vpPending">RD$0</b><small id="vpPendingPct">0% del plan</small></article>
+            </div>
+            <div class="annual-status-callout" id="vpStatusCallout">
+              <span class="status-icon">◎</span>
+              <div><b id="vpStatusTitle">Seguimiento anual</b><p id="vpAnnualCaption">—</p></div>
+            </div>
+            <span id="vpExecution" class="hidden-metric">RD$0</span>
+          </aside>
+        </div>
+      </section>
+      <section class="panel quarter-panel">
+        <div class="section-header">EJECUCIÓN POR TRIMESTRE 2026</div>
+        <div id="vpQuarterCards" class="quarter-grid"></div>
+      </section>
+
+      <section class="panel action-summary-panel">
+        <div class="section-header">PLAN DE ACCIÓN – RESUMEN</div>
+        <div class="action-summary-grid">
+          <article class="action-stat"><div class="stat-icon blue-bg">▣</div><div><b id="actionOpen">0</b><span>Acciones abiertas</span><small>Pendiente + En proceso + Bloqueado</small></div></article>
+          <article class="action-stat danger"><div class="stat-icon red-bg">!</div><div><b id="actionHigh">0</b><span>Prioridad alta</span></div></article>
+          <article class="action-stat danger"><div class="stat-icon yellow-bg">◉</div><div><b id="actionImpact">RD$0</b><span>Bajo seguimiento</span><small>Impacto estimado</small></div></article>
+          <article class="action-stat"><div class="stat-icon blue-bg">●●</div><div><b id="actionOwners">0</b><span>Responsables involucrados</span></div></article>
+        </div>
+      </section>
+
+      <section class="panel action-area-panel">
+        <div class="section-header action-title-row">
+          <span>PLAN DE ACCIÓN POR ÁREA</span>
+          <div class="mini-controls">
+            <div class="segmented small" id="actionAreaFilter">
+              <button class="active" data-action-area="Todas">Todas</button>
+              <button data-action-area="Operaciones">Operaciones</button>
+              <button data-action-area="Mantenimiento">Mantenimiento</button>
+            </div>
+            <label class="switch-label">Mostrar solo abiertas <input id="onlyOpenActions" type="checkbox" checked><span class="switch"></span></label>
+          </div>
+        </div>
+        <div class="action-columns">
+          <article class="action-box">
+            <div class="action-box-head"><h3>🔧 MANTENIMIENTO</h3><span id="maintOpenCount">0 acciones abiertas</span></div>
+            <div class="action-table-wrap"><table><thead><tr><th>Prioridad</th><th>Centro</th><th>Tema</th><th>Acción / Próximo paso</th><th>Compromiso</th><th>Avance</th><th>Estatus</th></tr></thead><tbody id="maintActionBody"></tbody></table></div>
+          </article>
+          <article class="action-box">
+            <div class="action-box-head"><h3>⚙ OPERACIONES</h3><span id="opsOpenCount">0 acciones abiertas</span></div>
+            <div class="action-table-wrap"><table><thead><tr><th>Prioridad</th><th>Centro</th><th>Tema</th><th>Acción / Próximo paso</th><th>Compromiso</th><th>Avance</th><th>Estatus</th></tr></thead><tbody id="opsActionBody"></tbody></table></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="attention-box">
+          <h3>⚠ ALERTAS Y PUNTOS DE ATENCIÓN</h3>
+          <div id="alertsList" class="attention-items"></div>
+        </article>
+        <article class="milestone-box">
+          <h3>▣ PRÓXIMOS HITOS</h3>
+          <div id="milestonesList" class="milestone-items"></div>
+        </article>
+      </section>
+    </section>
+
+    <!-- EJECUCIÓN GENERAL -->
+    <section id="page-general" class="page">
+      <section class="panel annual-panel annual-comparison-panel general-annual">
+        <div class="section-header">EJECUCIÓN ANUAL 2026</div>
+        <div class="annual-comparison-layout">
+          <div class="annual-bars-zone">
+            <div class="annual-result-head">
+              <div><span id="gGapLabel">Por ejecutar</span><b id="gGap">RD$0</b></div>
+              <strong id="gAnnualPct">0% de ejecución</strong>
+            </div>
+            <div class="annual-bracket" aria-hidden="true"><i></i><span></span><i></i></div>
+            <div class="annual-bars">
+              <div class="annual-bar-column">
+                <div class="annual-total-value" id="gExecutionTop">RD$0</div>
+                <div class="vertical-bar execution-stack">
+                  <div class="bar-segment committed" id="gCommittedBar"><span id="gCommittedInside">RD$0</span></div>
+                  <div class="bar-segment real" id="gRealBar"><span id="gRealInside">RD$0</span></div>
+                </div>
+                <b class="bar-label">Ejecución</b>
+              </div>
+              <div class="annual-bar-column">
+                <div class="annual-total-value" id="gPlanTop">RD$0</div>
+                <div class="vertical-bar plan-bar">
+                  <div class="bar-segment plan" id="gPlanBar"><span id="gPlanInside">RD$0</span></div>
+                </div>
+                <b class="bar-label">Plan</b>
+              </div>
+            </div>
+            <div class="annual-legend">
+              <span><i class="legend-dot real-dot"></i>Real</span>
+              <span><i class="legend-dot committed-dot"></i>Comprometido</span>
+              <span><i class="legend-dot plan-dot"></i>Plan</span>
+            </div>
+          </div>
+
+          <aside class="annual-indicators">
+            <h3>Indicadores clave</h3>
+            <div class="annual-indicator-grid">
+              <article><span>Plan anual</span><b id="gPlan">RD$0</b></article>
+              <article class="green"><span>Real</span><b id="gReal">RD$0</b><small id="gRealPct">0% del plan</small></article>
+              <article class="orange"><span>Comprometido</span><b id="gCommitted">RD$0</b><small id="gCommittedPct">0% del plan</small></article>
+              <article class="muted"><span>Por ejecutar</span><b id="gPending">RD$0</b><small id="gPendingPct">0% del plan</small></article>
+            </div>
+            <div class="annual-status-callout" id="gStatusCallout">
+              <span class="status-icon">◎</span>
+              <div><b id="gStatusTitle">Seguimiento anual</b><p id="gAnnualCaption">—</p></div>
+            </div>
+            <span id="gExecution" class="hidden-metric">RD$0</span>
+          </aside>
+        </div>
+      </section>
+      <section class="panel general-quarter-panel">
+        <div class="section-header">ACUMULADO POR TRIMESTRE</div>
+        <div id="generalQuarterCards" class="quarter-grid"></div>
+      </section>
+
+      <section class="panel general-filter-panel">
+        <div class="section-header inline-header">
+          <span>DETALLE MENSUAL POR TRIMESTRE</span>
+          <div class="quarter-selector" id="quarterSelector">
+            <button class="active" data-quarter="T1">T1 · Abr-Jun</button>
+            <button data-quarter="T2">T2 · Jul-Sep</button>
+            <button data-quarter="T3">T3 · Oct-Dic</button>
+            <button data-quarter="T4">T4 · Ene-Mar</button>
+          </div>
+        </div>
+        <div id="monthCards" class="month-grid"></div>
+      </section>
+
+      <section class="general-charts-grid">
+        <article class="panel"><div class="section-header">CURVA S · PLAN VS EJECUTADO ACUMULADO</div><div class="chart-wrap tall"><canvas id="curveChart"></canvas></div></article>
+        <article class="panel"><div class="section-header">VARIACIÓN MENSUAL</div><div class="chart-wrap tall"><canvas id="varianceChart"></canvas></div></article>
+        <article class="panel span-2"><div class="section-header">EJECUCIÓN POR CENTRO</div><div class="chart-wrap"><canvas id="centerExecChart"></canvas></div></article>
+      </section>
+    </section>
+
+    <!-- ANÁLISIS DE INVERSIONES -->
+    <section id="page-centros" class="page">
+      <section class="panel">
+        <div class="section-header">ANÁLISIS DE INVERSIONES POR CENTRO</div>
+        <div class="investment-filters">
+          <label class="filter-field wide"><span>Buscar por tienda</span><input id="storeSearch" class="search" placeholder="Escribe nombre o código de tienda"></label>
+          <label class="filter-field"><span>Supranúmero</span><select id="supraSelect"><option value="">Todos los supranúmeros</option></select></label>
+          <label class="filter-field"><span>Formato</span><select id="formatSelect"><option value="">Todos los formatos</option></select></label>
+          <button id="clearInvestmentFilters" class="clear-filter-btn">Limpiar filtros</button>
+        </div>
+        <div id="investmentFilterChip" class="investment-filter-chip">Vista: todas las tiendas · todos los supranúmeros · todos los formatos</div>
+        <div class="center-kpis" id="centerKpis"></div>
+      </section>
+
+      <section class="center-grid">
+        <article class="panel"><div class="section-header">PLAN VS EJECUCIÓN POR TIENDA</div><div class="chart-wrap tall"><canvas id="centerCompareChart"></canvas></div></article>
+        <article class="panel"><div class="section-header">MAYOR PENDIENTE POR TIENDA</div><div class="chart-wrap tall"><canvas id="centerPendingChart"></canvas></div></article>
+      </section>
+
+      <section class="panel investment-detail-panel">
+        <div class="section-header inline-header"><span>DETALLE DE INVERSIONES</span><span id="detailCount" class="detail-count">0 registros</span></div>
+        <div class="detail-table-wrap">
+          <table class="detail-table">
+            <thead><tr><th>Centro / Tienda</th><th>Formato</th><th>Descripción</th><th>Plan</th><th>Real</th><th>Comprometido</th><th>Ejecución</th><th>Pendiente</th><th>% Ejecución</th><th>Área</th></tr></thead>
+            <tbody id="detailBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script defer src="script.js?v=14"></script>
+</body>
+</html>
